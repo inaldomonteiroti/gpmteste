@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost/gpmteste/";
+const BASE_URL = "http://localhost/gpmteste/"; // util para as requisições ajax
 
 const DATATABLE_PTBR = {
     "sEmptyTable": "Nenhum registro encontrado",
@@ -24,21 +24,21 @@ const DATATABLE_PTBR = {
     }
 }
 
-function clearErrors() { // funcao para limpar erros da classe .has error do bootstrap
-	$(".has-error").removeClass("has-error"); // funcao para limpar erros do html
-	$(".help-block").html("");
+function clearErrors() { //1  funcao para limpar erros da classe .has error do bootstrap
+	$(".has-error").removeClass("has-error"); // jquery funcao para limpar erros do html
+	$(".help-block").html(""); // limpar o html colocar vazio
 }
 
 function showErrors(error_list) {
-	clearErrors();
+	clearErrors(); // toda vez que apresentar novos erros é preciso limpar
 
-	$.each(error_list, function(id, message) {
+	$.each(error_list, function(id, message) { // percorrer recebe dois parametros um #btn_login : Mensagem
 		$(id).parent().parent().addClass("has-error");
 		$(id).parent().siblings(".help-block").html(message)
 	})
 } 
 
-function showErrorsModal(error_list) {
+function showErrorsModal(error_list) { // erros do modal
 	clearErrors();
 
 	$.each(error_list, function(id, message) {
@@ -48,19 +48,19 @@ function showErrorsModal(error_list) {
 } 
 
 function loadingImg(message="") {
-	return "<i class='fa fa-circle-o-notch fa-spin'></i>&nbsp;" + message
+	return "<i class='fa fa-circle-o-notch fa-spin'></i>&nbsp;" + message // icone rodando spin .....ná hora do loading $(".help-block").html(LoadingImg)("Verificando")
 }
 
-function uploadImg(input_file, img, input_path) {
+function uploadImg(input_file, img, input_path) { // esssa função é responsavel de fazer o upload da imagem
 
 	src_before = img.attr("src");
-	img_file = input_file[0].files[0];
-	form_data = new FormData();
+	img_file = input_file[0].files[0]; // objeto arquivo do input_file coloca na variavel
+	form_data = new FormData(); // nativo formulario do javascript
 
 	form_data.append("image_file", img_file);
 
 	$.ajax({
-		url: BASE_URL + "restrict/ajax_import_image",
+		url: BASE_URL + "restrict/ajax_import_image", //requisição ajax
 		dataType: "json",
 		cache: false,
 		contentType: false,

@@ -1,52 +1,52 @@
 <?php
 
-class Users_model extends CI_Model {
+class Users_model extends CI_Model { 
 
-	public function __construct() {
+	public function __construct() { //função construtora
 		parent::__construct(); // Especifica para o codigniter que esta fazendo o contrutor de User_model
-		$this->load->database(); // vem de CI_model
+		$this->load->database(); // funcao que vem de CI_model // carregar a base para fazer as operações
 	}
 
-	public function get_user_data($user_login) {
-
-		$this->db
+	public function get_user_data($user_login) { //user_login é passado no controller
+		//verifica se tem algum ususario e tras os dados
+		$this->db 
 			->select("user_id, password_hash, user_full_name, user_email") // pegar todos os campos
-			->from("users") // da tabela login
-			->where("user_login", $user_login);
+			->from("users") // da tabela users
+			->where("user_login", $user_login); // onde userlogin igual a $userlogin
 
-		$result = $this->db->get(); // a query roda agora e coloca no result
+		$result = $this->db->get(); // a query roda agora e coloca no result no get
 
-		if ($result->num_rows() > 0) {
+		if ($result->num_rows() > 0) { // se usuario encontrado retorna a linha retorna alguem
 			return $result->row();
 		} else {
-			return NULL;
+			return NULL;  // senao retorna nulo
 		}
 	}
 
-	public function get_data($id, $select = NULL) {
+	public function get_data($id, $select = NULL) { //passa o id , select com os campos
 		if (!empty($select)) {
 			$this->db->select($select);
 		}
-		$this->db->from("users");
-		$this->db->where("user_id", $id);
-		return $this->db->get();
+		$this->db->from("users");  // buscando na tabela users
+		$this->db->where("user_id", $id); // informações do usuario passado
+		return $this->db->get(); // executa a query retorna o objeto que vai ter as propriedades
 	}
 
-	public function insert($data) {
+	public function insert($data) { // precisa de $data onde data tem uma chave e o valor
 		$this->db->insert("users", $data);
 	}
 
-	public function update($id, $data) {
+	public function update($id, $data) { // atualização
 		$this->db->where("user_id", $id);
 		$this->db->update("users", $data);
 	}
 
-	public function delete($id) {
+	public function delete($id) { // delete
 		$this->db->where("user_id", $id);
 		$this->db->delete("users");
 	}
 
-	public function is_duplicated($field, $value, $id = NULL) {
+	public function is_duplicated($field, $value, $id = NULL) { // importante para verificar campos duplicados
 		if (!empty($id)) {
 			$this->db->where("user_id <>", $id);
 		}

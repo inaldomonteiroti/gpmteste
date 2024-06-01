@@ -23,7 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://localhost/gpmteste/'; // coloque o endereço do seu site aqui
+$config['base_url'] = 'http://localhost/gpmteste/'; // coloque o endereço do seu site aqui passar a url base
 
 /*
 |--------------------------------------------------------------------------

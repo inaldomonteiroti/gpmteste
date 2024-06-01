@@ -29,7 +29,7 @@
 		<!-- onde style_name é o nome do aquivo passado no controller -->
 		<?php if (isset($styles)) {
 			foreach ($styles as $style_name) {
-				$href = base_url() . "public/css/" . $style_name; ?>
+				$href = base_url() . "public/css/" . $style_name; ?> 	<!-- Os dados vem no controller o estilo aproveitando a base url -->
 				<link href="<?=$href // echo?>" rel="stylesheet"> 
 			<?php }
 		} ?>
@@ -47,7 +47,6 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand page-scroll" href="#page-top" style="margin-top: 10px;"><img src="<?php echo base_url(); ?>public/images/logo.png" alt="GPMTESTE"></a>
 				</div>
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				

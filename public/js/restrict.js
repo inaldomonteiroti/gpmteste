@@ -1,10 +1,10 @@
 $(function() {
 
-	// EXIBIR MODAIS
+	// EXIBIR MODAIS     jquery
 	$("#btn_add_course").click(function(){
-		clearErrors();
-		$("#form_course")[0].reset();
-		$("#course_img_path").attr("src", "");
+		clearErrors(); // limpa o modal quando ele é aberto e fechado
+		$("#form_course")[0].reset(); // apaga todos os campos do tipo input
+		$("#course_img_path").attr("src", ""); // limpa o search da imagem quando o modal é fechado
 		$("#modal_course").modal();
 	});
 
@@ -29,21 +29,21 @@ $(function() {
 		uploadImg($(this), $("#member_photo_path"), $("#member_photo"));
 	});
 
-	$("#form_course").submit(function() {
+	$("#form_course").submit(function() { //quando o formulário for submetido
 
 		$.ajax({
 			type: "POST",
 			url: BASE_URL + "restrict/ajax_save_course",
 			dataType: "json",
-			data: $(this).serialize(),
+			data: $(this).serialize(), // pega todos os campos e transforma num formato que pode ser enviado via post
 			beforeSend: function() {
 				clearErrors();
-				$("#btn_save_course").siblings(".help-block").html(loadingImg("Verificando..."));
+				$("#btn_save_course").siblings(".help-block").html(loadingImg("Verificando...")); // jquery pegando o id , os irmaos
 			},
 			success: function(response) {
 				clearErrors();
 				if (response["status"]) {
-					$("#modal_course").modal("hide");
+					$("#modal_course").modal("hide"); /// fecha o modal depois de inserir
 					swal("Sucesso!","Curso salvo com sucesso!", "success");
 					dt_course.ajax.reload();
 				} else {

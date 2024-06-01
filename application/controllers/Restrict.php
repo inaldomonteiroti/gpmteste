@@ -2,109 +2,111 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed'); // Segurança ..... impede acesso direto ao arquivo
 
-class Restrict extends CI_Controller{
+class Restrict extends CI_Controller{ //Extender a classe principal CI_Controller
 
 	public function __construct() {
 		parent::__construct();
-		$this->load->library("session");
+		$this->load->library("session"); // Carregar a biblioteca
 	}
 
 	public function index(){
 
-		if ($this->session->userdata("user_id")) {
-			$data = array(
+		if ($this->session->userdata("user_id")) { // se tiver seção vai para restrict e não para login
+			$data = array(    // variaveis customizadas
 				"styles" => array(
 					"dataTables.bootstrap.min.css",
 					"datatables.min.css"
 				),
-				"scripts" => array(
+				"scripts" => array(  // variaveis customizadas
 					"sweetalert2.all.min.js",
 					"dataTables.bootstrap.min.js",
 					"datatables.min.js",
 					"util.js",
-					"restrict.js" 
+					"restrict.js" //passando a abertura dos modais estão aqui
 				),
 				"user_id" => $this->session->userdata("user_id")
 			);
 			$this->template->show("restrict.php", $data);
-		} else {
-			$data = array(
-				"scripts" => array(
+		} else { // se ele nao está logado
+			$data = array( // variaveis customizadas para a view login
+				"scripts" => array(  
 					"util.js",
 					"login.js" 
 				)
 			);
-			$this->template->show("login.php", $data);
+			$this->template->show("login.php", $data); // Essa é a view do formulário de LOGIN
 		}
 
 	}
 
-	public function logoff() {
+	public function logoff() { // destruir todas as variaveis de seção 
 		$this->session->sess_destroy();
-		header("Location: " . base_url() . "restrict");
+		header("Location: " . base_url() . "restrict"); // força atualização para voltar para o index
 	}
 	
-	public function ajax_login() {
+	public function ajax_login() { // função chamada quando o form for submetido
 
 		if (!$this->input->is_ajax_request()) {
 			exit("Nenhum acesso de script direto permitido!");
 		}
 
-		$json = array();
-		$json["status"] = 1;
+		$json = array(); // vazio
+		$json["status"] = 1; // status 1 ocorreu tudo bem
 		$json["error_list"] = array();
 
-		$username = $this->input->post("username");
+		$username = $this->input->post("username"); // recebe via post username e password que vem do form
 		$password = $this->input->post("password");
 
 		if (empty($username)) {
-			$json["status"] = 0;
+			$json["status"] = 0; // erro statos 0
 			$json["error_list"]["#username"] = "Usuário não pode ser vazio!";
 		} else {
-			$this->load->model("users_model");
+			$this->load->model("users_model"); // 1 Carregando o model users printr - aqui foi passado um ususario
 			$result = $this->users_model->get_user_data($username);
-			if ($result) {
+			if ($result) { // se achou
 				$user_id = $result->user_id;
 				$password_hash = $result->password_hash;
-				if (password_verify($password, $password_hash)) {
-					$this->session->set_userdata("user_id", $user_id);
+				if (password_verify($password, $password_hash)) { // se a senha passada ta batendo com o hash
+					$this->session->set_userdata("user_id", $user_id);  // criar uma seção - login feito tem que carregar lá em cima no construtor
 				} else {
-					$json["status"] = 0;
+					$json["status"] = 0; //deu erro
 				}
 			} else {
 				$json["status"] = 0;
 			}
 			if ($json["status"] == 0) {
-				$json["error_list"]["#btn_login"] = "Usuário e/ou senha incorretos!";
+				$json["error_list"]["#btn_login"] = "Usuário e/ou senha incorretos!"; // se der erro ...essa é a mensagem de erro
 			}
 		}
 
-		echo json_encode($json);
+		echo json_encode($json); //transformar o array json no formato json para ser lido com javascript
 
 	}
 
 	public function ajax_import_image() {
 
-		if (!$this->input->is_ajax_request()) {
+		if (!$this->input->is_ajax_request()) { // se a requisição verifica se é do tipo ajax / não permite acesso direto
 			exit("Nenhum acesso de script direto permitido!");
 		}
+
+		//utilizar uma biblioteca do codgniter para fazer o upload de imagem....obs definir permissão da pasta
 
 		$config["upload_path"] = "./tmp/";
 		$config["allowed_types"] = "gif|png|jpg";
 		$config["overwrite"] = TRUE;
 
-		$this->load->library("upload", $config);
+		$this->load->library("upload", $config); // carregando a biblioteca
 
 		$json = array();
 		$json["status"] = 1;
 
-		if (!$this->upload->do_upload("image_file")) {
+		if (!$this->upload->do_upload("image_file")) { // passado no javascript nome do campo que contem o arquivo
 			$json["status"] = 0;
 			$json["error"] = $this->upload->display_errors("","");
 		} else {
 			if ($this->upload->data()["file_size"] <= 1024) {
 				$file_name = $this->upload->data()["file_name"];
-				$json["img_path"] = base_url() . "tmp/" . $file_name;
+				$json["img_path"] = base_url() . "tmp/" . $file_name; // formação do caminho
 			} else {
 				$json["status"] = 0;
 				$json["error"] = "Arquivo não deve ser maior que 1 MB!";
@@ -115,7 +117,7 @@ class Restrict extends CI_Controller{
 		echo json_encode($json);
 	}
 
-	public function ajax_save_course() {
+	public function ajax_save_course() { // salvando o curso
 
 		if (!$this->input->is_ajax_request()) {
 			exit("Nenhum acesso de script direto permitido!");
@@ -125,14 +127,14 @@ class Restrict extends CI_Controller{
 		$json["status"] = 1;
 		$json["error_list"] = array();
 
-		$this->load->model("courses_model");
+		$this->load->model("courses_model"); //
 
-		$data = $this->input->post();
+		$data = $this->input->post(); // metodo
 
-		if (empty($data["course_name"])) {
+		if (empty($data["course_name"])) { // se o curso name for vazio
 			$json["error_list"]["#course_name"] = "Nome do curso é obrigatório!";
 		} else {
-			if ($this->courses_model->is_duplicated("course_name", $data["course_name"], $data["course_id"])) {
+			if ($this->courses_model->is_duplicated("course_name", $data["course_name"], $data["course_id"])) { // field , value e id
 				$json["error_list"]["#course_name"] = "Nome de curso já existente!";
 			}
 		}
@@ -146,25 +148,27 @@ class Restrict extends CI_Controller{
 			}
 		}
 
+		// 0 a 99.9 // precisamos alterar isso no banco
+
 		if (!empty($json["error_list"])) {
 			$json["status"] = 0;
 		} else {
 
-			if (!empty($data["course_img"])) {
+			if (!empty($data["course_img"])) { // se o image nao estiver vazio , que vem do post no formulario
 
-				$file_name = basename($data["course_img"]);
-				$old_path = getcwd() . "/tmp/" . $file_name;
-				$new_path = getcwd() . "/public/images/courses/" . $file_name;
-				rename($old_path, $new_path);
+				$file_name = basename($data["course_img"]); // url completa
+				$old_path = getcwd() . "/tmp/" . $file_name; // caminhos fisicos no sistema da pasta tmp / patch
+				$new_path = getcwd() . "/public/images/courses/" . $file_name; //  caminhos fisicos no sistema da pasta courses
+				rename($old_path, $new_path); 
 
-				$data["course_img"] = "/public/images/courses/" . $file_name;
+				$data["course_img"] = "/public/images/courses/" . $file_name; // esse é o path da imagem no banco
 
 			} else {
 				unset($data["course_img"]);
 			}
 
-			if (empty($data["course_id"])) {
-				$this->courses_model->insert($data);
+			if (empty($data["course_id"])) { // se o curso é novo não teem nada lá
+				$this->courses_model->insert($data); // insere o curso
 			} else {
 				$course_id = $data["course_id"];
 				unset($data["course_id"]);
@@ -190,7 +194,7 @@ class Restrict extends CI_Controller{
 		$data = $this->input->post();
 
 		if (empty($data["member_name"])) {
-			$json["error_list"]["#member_name"] = "Nome do membro é obrigatório!";
+			$json["error_list"]["#member_name"] = "Nome do vendedor é obrigatório!";
 		} 
 
 		if (!empty($json["error_list"])) {

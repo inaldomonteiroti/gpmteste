@@ -3,10 +3,10 @@
   <div class="container">
 
 
-	<div class="row" style="background-color:darkgray; margin-top: 20px; padding-top: 10px;">
+	<div class="row" style="margin-top: 20px; padding-top: 10px;">
       <div class="col-lg-offset-5 col-lg-2 text-center">
         <div class="form-group">
-          <a id="btn_your_user" class="btn btn-link" user_id="<?=$user_id?>"><i class="fa fa-user"></i></a>
+         
           <a class="btn btn-link" href="restrict/logoff"><i class="fa fa-sign-out"></i></a>
         </div>
       </div>
@@ -109,6 +109,7 @@
             <div class="col-lg-10">
               <input id="course_name" name="course_name" class="form-control" maxlength="100">
               <span class="help-block"></span>
+							<!-- Onde acontecem as mensagem de erro -->
             </div>
           </div>
 
